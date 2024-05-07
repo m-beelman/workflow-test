@@ -26,7 +26,8 @@
                     for file in "${file_array[@]}"; do
                         echo "$file"
                     done
-                - name: print changed files
+                - name: Call Cmake with multiple targets
                   run: |
-                    echo "changedFiles=$changedFiles"
-                    
+                    changedFiles_for_cmake="${changedFiles//$','/' '}"
+                    echo "cmake --build . --target $changedFiles_for_cmake"
+
