@@ -20,3 +20,8 @@
                   run: |
                     files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
                     echo "${files//$'\n'/,}"
+                    IFS=',' read -ra file_array <<< "${files}"
+                    for file in "${file_array[@]}"; do
+                        echo "$file"
+                    done
+                    
