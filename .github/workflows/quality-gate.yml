@@ -18,10 +18,15 @@
                 - name: Get list of changed files
                   id: changed-files
                   run: |
-                    files=$(git diff --name-only ${{ github.base_ref }} ${{ github.event.after }})
-                    files="${files//$'\n'/,}"
-                    echo $files
-                    IFS=',' read -ra file_array <<< "${files}"
+                    files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+                    changedFiles="${files//$'\n'/,}"
+                    echo $changedFiles
+                    echo "changedFiles=$changedFiles" >> $GITHUB_ENV
+                    IFS=',' read -ra file_array <<< "$changedFiles"
                     for file in "${file_array[@]}"; do
                         echo "$file"
                     done
+                - name: print changed files
+                  run: |
+                    echo "changedFiles=$changedFiles"
+                    
