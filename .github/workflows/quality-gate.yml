@@ -19,5 +19,4 @@
                   id: changed-files
                   run: |
                     files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-                    echo $files
-                    echo "changed_files='$files'" >> "$GITHUB_ENV"
+                    echo "${files//$'\n'/,}"
