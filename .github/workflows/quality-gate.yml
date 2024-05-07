@@ -19,7 +19,7 @@
                   id: changed-files
                   run: |
                     files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-                    files = "${files//$'\n'/,}"
+                    files="${files//$'\n'/,}"
                     echo $files
                     IFS=',' read -ra file_array <<< "${files}"
                     for file in "${file_array[@]}"; do
