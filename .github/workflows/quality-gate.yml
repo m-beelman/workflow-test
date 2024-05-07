@@ -19,5 +19,5 @@
                   id: changed-files
                   run: |
                     files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-                    echo "::set-output name=files::$files"
-    
+                    echo $files
+                    echo "changed_files=$files" >> "$GITHUB_ENV"
