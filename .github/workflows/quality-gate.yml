@@ -18,7 +18,7 @@
                 - name: Get list of changed files
                   id: changed-files
                   run: |
-                    files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
+                    files=$(git diff --name-only $GITHUB_BASE_REF ${{ github.event.after }})
                     files="${files//$'\n'/,}"
                     echo $files
                     IFS=',' read -ra file_array <<< "${files}"
