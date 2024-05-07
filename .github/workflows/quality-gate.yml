@@ -30,4 +30,12 @@
                   run: |
                     changedFiles_for_cmake="${changedFiles//$','/' '}"
                     echo "cmake --build . --target $changedFiles_for_cmake"
+                - name: Call ctest for every target
+                  run: |
+                    changedFiles_for_cmake="${changedFiles//$','/' '}"
+                    IFS=',' read -ra file_array <<< "$changedFiles"
+                    for file in "${file_array[@]}"; do
+                        echo "ctest --preset=default -j `nproc` -VV -R \"^$file(\..*)?\.unit\.all$\""
+                    done
+
 
