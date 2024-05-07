@@ -1,0 +1,23 @@
+---
+    name: Quality Gate
+    on:
+        pull_request:
+            branches:
+                - main
+        workflow_dispatch:
+    
+    jobs:
+        full-build-test:
+            runs-on:
+                - ubuntu-latest
+            steps:
+                - name: Checkout
+                  uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+                  with:
+                    fetch-depth: 0
+                - name: Get list of changed files
+                  id: changed-files
+                  run: |
+                    files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
+                    echo "::set-output name=files::$files"
+    
