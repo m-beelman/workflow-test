@@ -1,0 +1,20 @@
+name: Check Pull Request Changes
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Run script to check PR changes
+      env:
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: python check_changes.py
