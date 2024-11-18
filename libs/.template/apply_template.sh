@@ -1,3 +1,4 @@
+# Another comment!!!
 # This script should crate a project folder in the libs directory.
 # It should also copy the template files into the project folder.
 # It should also change the project name in the CMakeLists.txt file.

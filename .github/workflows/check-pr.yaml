@@ -4,6 +4,16 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+# token needs some additional permissions to be able to add a comment to the PR
+# and read all PR data
+# permissions can vary depending on the metrics you want to use and org settings
+permissions:
+  contents: read
+  checks: read
+  pull-requests: write
+  repository-projects: read
+  actions: read
+  
 jobs:
   check-changes:
     runs-on: ubuntu-latest
