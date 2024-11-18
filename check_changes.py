@@ -1,17 +1,16 @@
-# just a comment
 import os
 import requests
 
 # GitHub API URL
 GITHUB_API_URL = "https://api.github.com"
 
-# Dateien und Muster, nach denen gesucht wird
+# Files and patterns to look for
 TARGET_EXTENSIONS = (".cmake", "CMakeLists.txt", ".bb")
-COMMENT_IDENTIFIER = "<!-- 48f61f98664448a973e3fb00b28723ce170dac87 -->\n⚠️ CMake- oder .bb-Änderungen erkannt"  # Eindeutiger Text im Kommentar
+COMMENT_IDENTIFIER = "<!-- 48f61f98664448a973e3fb00b28723ce170dac87 -->\n⚠️ CMake or .bb changes detected"
 
 def get_pr_files(repo, pr_number, token):
     """
-    Holt die geänderten Dateien eines Pull-Requests.
+    Fetches the changed files of a pull request.
     """
     headers = {"Authorization": f"Bearer {token}"}
     files_url = f"{GITHUB_API_URL}/repos/{repo}/pulls/{pr_number}/files"
@@ -21,32 +20,22 @@ def get_pr_files(repo, pr_number, token):
 
 def check_file_changes(files):
     """
-    Überprüft, ob relevante Dateien geändert oder umbenannt wurden.
+    Checks if relevant files were changed or renamed.
     """
     for file in files:
         if any(file["filename"].endswith(ext) for ext in TARGET_EXTENSIONS) or file.get("status") == "renamed":
             return True
     return False
 
-def get_existing_comments(repo, pr_number, token):
+def get_existing_review_comments(repo, pr_number, token):
     """
-    Holt alle Kommentare für den Pull-Request.
+    Fetches existing review comments on a pull request.
     """
     headers = {"Authorization": f"Bearer {token}"}
-    comments_url = f"{GITHUB_API_URL}/repos/{repo}/issues/{pr_number}/comments"
+    comments_url = f"{GITHUB_API_URL}/repos/{repo}/pulls/{pr_number}/reviews"
     response = requests.get(comments_url, headers=headers)
     response.raise_for_status()
     return response.json()
-
-def post_pr_comment(repo, pr_number, token, comment):
-    """
-    Adds a comment to the pull request.
-    """
-    headers = {"Authorization": f"Bearer {token}"}
-    comments_url = f"{GITHUB_API_URL}/repos/{repo}/issues/{pr_number}/comments"
-    payload = {"body": comment}
-    response = requests.post(comments_url, headers=headers, json=payload)
-    response.raise_for_status()
 
 def post_pr_review_comment(repo, pr_number, token, comment):
     """
@@ -63,42 +52,31 @@ def post_pr_review_comment(repo, pr_number, token, comment):
 
 def check_and_comment(repo, pr_number, token):
     """
-    Überprüft die Änderungen und fügt bei Bedarf einen Kommentar hinzu.
+    Checks for changes and adds a comment if necessary.
     """
-    # PR-Dateien abrufen
     files = get_pr_files(repo, pr_number, token)
-
-    # Überprüfen, ob relevante Änderungen vorliegen
+    
     if check_file_changes(files):
-        # Bestehende Kommentare prüfen
-        comments = get_existing_comments(repo, pr_number, token)
-        for comment in comments:
+        existing_comments = get_existing_review_comments(repo, pr_number, token)
+        for comment in existing_comments:
             if COMMENT_IDENTIFIER in comment["body"]:
-                print("Relevanter Kommentar existiert bereits.")
-                return  # Kommentar ist bereits vorhanden
+                print("Relevant comment already exists.")
+                return
 
-        # Kommentar erstellen, wenn keiner existiert
         comment = (
             f"{COMMENT_IDENTIFIER}\n\n"
-            "Es wurden Änderungen an Dateien mit CMake-Konfiguration (.cmake, CMakeLists.txt) oder .bb-Dateien festgestellt. "
-            "Bitte sicherstellen, dass diese Änderungen überprüft werden. Dieser Kommentar muss gelöst werden."
+            "Changes to CMake configuration files (.cmake, CMakeLists.txt) or .bb files detected. "
+            "Please ensure these changes are reviewed. This comment must be resolved."
         )
         post_pr_review_comment(repo, pr_number, token, comment)
-        print("Kommentar erfolgreich hinzugefügt. ->>" + comment)
+        print("Comment successfully added.")
     else:
-        print("Keine relevanten Änderungen gefunden.")
+        print("No relevant changes found.")
 
 def main():
-    # Umgebungsvariablen für GitHub Actions
-    repo = os.getenv("GITHUB_REPOSITORY")  # Format: "owner/repo"
-    pr_number = os.getenv("GITHUB_PULL_REQUEST_NUMBER")  # PR-Nummer
-    github_token = os.getenv("GH_TOKEN")  # GitHub Token
-
-    if not all([repo, pr_number, github_token]):
-        print("Fehlende Umgebungsvariablen: GITHUB_REPOSITORY, GITHUB_PULL_REQUEST_NUMBER oder GH_TOKEN.")
-        exit(1)
-
-    # Änderungen prüfen und kommentieren
+    repo = os.getenv("GITHUB_REPOSITORY")
+    pr_number = os.getenv("GITHUB_PULL_REQUEST_NUMBER")
+    github_token = os.getenv("GH_TOKEN")
     check_and_comment(repo, pr_number, github_token)
 
 if __name__ == "__main__":
