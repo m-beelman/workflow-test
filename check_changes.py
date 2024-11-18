@@ -70,7 +70,7 @@ def check_and_comment(repo, pr_number, token):
             "Es wurden Änderungen an Dateien mit CMake-Konfiguration (.cmake, CMakeLists.txt) oder .bb-Dateien festgestellt. "
             "Bitte sicherstellen, dass diese Änderungen überprüft werden. Dieser Kommentar muss gelöst werden."
         )
-        # post_pr_comment(repo, pr_number, token, comment)
+        post_pr_comment(repo, pr_number, token, comment)
         print("Kommentar erfolgreich hinzugefügt. ->>" + comment)
     else:
         print("Keine relevanten Änderungen gefunden.")
