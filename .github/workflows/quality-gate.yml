@@ -18,6 +18,24 @@
                 - name: Get list of changed files
                   id: changed-files
                   run: |
-                    files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-                    echo "::set-output name=files::$files"
-    
+                    files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+                    changedFiles="${files//$'\n'/,}"
+                    echo $changedFiles
+                    echo "changedFiles=$changedFiles" >> $GITHUB_ENV
+                    IFS=',' read -ra file_array <<< "$changedFiles"
+                    for file in "${file_array[@]}"; do
+                        echo "$file"
+                    done
+                - name: Call Cmake with multiple targets
+                  run: |
+                    changedFiles_for_cmake="${changedFiles//$','/' '}"
+                    echo "cmake --build . --target $changedFiles_for_cmake"
+                - name: Call ctest for every target
+                  run: |
+                    changedFiles_for_cmake="${changedFiles//$','/' '}"
+                    IFS=',' read -ra file_array <<< "$changedFiles"
+                    for file in "${file_array[@]}"; do
+                        echo "ctest --preset=default -j `nproc` -VV -R \"^$file(\..*)?\.unit\.all$\""
+                    done
+
+
