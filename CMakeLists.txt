@@ -1,3 +1,4 @@
+# This is a new comment
 cmake_minimum_required(VERSION 3.10)
 project(libs)
 # add a comment
