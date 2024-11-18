@@ -33,7 +33,7 @@ def get_existing_comments(repo, pr_number, token):
     Holt alle Kommentare für den Pull-Request.
     """
     headers = {"Authorization": f"Bearer {token}"}
-    comments_url = f"{GITHUB_API_URL}/repos/{repo}/pulls/{pr_number}/comments"
+    comments_url = f"{GITHUB_API_URL}/repos/{repo}/issues/{pr_number}/comments"
     response = requests.get(comments_url, headers=headers)
     response.raise_for_status()
     return response.json()
