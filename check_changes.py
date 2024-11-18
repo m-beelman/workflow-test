@@ -43,7 +43,7 @@ def post_pr_comment(repo, pr_number, token, comment):
     Adds a comment to the pull request.
     """
     headers = {"Authorization": f"Bearer {token}"}
-    comments_url = f"{GITHUB_API_URL}/repos/{repo}/pulls/{pr_number}/comments"
+    comments_url = f"{GITHUB_API_URL}/repos/{repo}/issues/{pr_number}/comments"
     payload = {"body": comment}
     response = requests.post(comments_url, headers=headers, json=payload)
     response.raise_for_status()
