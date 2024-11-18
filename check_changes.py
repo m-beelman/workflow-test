@@ -7,7 +7,7 @@ GITHUB_API_URL = "https://api.github.com"
 
 # Dateien und Muster, nach denen gesucht wird
 TARGET_EXTENSIONS = (".cmake", "CMakeLists.txt", ".bb")
-COMMENT_IDENTIFIER = "⚠️ CMake- oder .bb-Änderungen erkannt"  # Eindeutiger Text im Kommentar
+COMMENT_IDENTIFIER = "<!-- 48f61f98664448a973e3fb00b28723ce170dac87 -->\n⚠️ CMake- oder .bb-Änderungen erkannt"  # Eindeutiger Text im Kommentar
 
 def get_pr_files(repo, pr_number, token):
     """
