@@ -48,6 +48,19 @@ def post_pr_comment(repo, pr_number, token, comment):
     response = requests.post(comments_url, headers=headers, json=payload)
     response.raise_for_status()
 
+def post_pr_review_comment(repo, pr_number, token, comment):
+    """
+    Adds a review comment to the pull request.
+    """
+    headers = {"Authorization": f"Bearer {token}"}
+    review_url = f"{GITHUB_API_URL}/repos/{repo}/pulls/{pr_number}/reviews"
+    payload = {
+        "body": comment,
+        "event": "REQUEST_CHANGES"
+    }
+    response = requests.post(review_url, headers=headers, json=payload)
+    response.raise_for_status()
+
 def check_and_comment(repo, pr_number, token):
     """
     Überprüft die Änderungen und fügt bei Bedarf einen Kommentar hinzu.
@@ -70,7 +83,7 @@ def check_and_comment(repo, pr_number, token):
             "Es wurden Änderungen an Dateien mit CMake-Konfiguration (.cmake, CMakeLists.txt) oder .bb-Dateien festgestellt. "
             "Bitte sicherstellen, dass diese Änderungen überprüft werden. Dieser Kommentar muss gelöst werden."
         )
-        post_pr_comment(repo, pr_number, token, comment)
+        post_pr_review_comment(repo, pr_number, token, comment)
         print("Kommentar erfolgreich hinzugefügt. ->>" + comment)
     else:
         print("Keine relevanten Änderungen gefunden.")
