@@ -75,8 +75,8 @@ def check_and_comment(repo, pr_number, token):
 
 def main():
     repo = os.getenv("GITHUB_REPOSITORY")
-    pr_number = os.getenv("PR_NUMBER")
-    github_token = os.getenv("GITHUB_TOKEN")
+    pr_number = os.getenv("GITHUB_PULL_REQUEST_NUMBER")
+    github_token = os.getenv("GH_TOKEN")
     check_and_comment(repo, pr_number, github_token)
 
 if __name__ == "__main__":
