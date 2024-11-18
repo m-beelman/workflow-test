@@ -7,7 +7,7 @@ GITHUB_API_URL = "https://api.github.com"
 
 # Dateien und Muster, nach denen gesucht wird
 TARGET_EXTENSIONS = (".cmake", "CMakeLists.txt", ".bb")
-COMMENT_IDENTIFIER = "⚠️ CMake- oder .bb-Änderungen erkannt"  # Eindeutiger Text im Kommentar
+COMMENT_IDENTIFIER = "<!-- 48f61f98664448a973e3fb00b28723ce170dac87 -->\n⚠️ CMake- oder .bb-Änderungen erkannt"  # Eindeutiger Text im Kommentar
 
 def get_pr_files(repo, pr_number, token):
     """
@@ -33,7 +33,7 @@ def get_existing_comments(repo, pr_number, token):
     Holt alle Kommentare für den Pull-Request.
     """
     headers = {"Authorization": f"Bearer {token}"}
-    comments_url = f"{GITHUB_API_URL}/repos/{repo}/pulls/{pr_number}/comments"
+    comments_url = f"{GITHUB_API_URL}/repos/{repo}/issues/{pr_number}/comments"
     response = requests.get(comments_url, headers=headers)
     response.raise_for_status()
     return response.json()
@@ -43,7 +43,7 @@ def post_pr_comment(repo, pr_number, token, comment):
     Adds a comment to the pull request.
     """
     headers = {"Authorization": f"Bearer {token}"}
-    comments_url = f"{GITHUB_API_URL}/repos/{repo}/pulls/{pr_number}/comments"
+    comments_url = f"{GITHUB_API_URL}/repos/{repo}/issues/{pr_number}/comments"
     payload = {"body": comment}
     response = requests.post(comments_url, headers=headers, json=payload)
     response.raise_for_status()
