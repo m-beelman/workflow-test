@@ -6,7 +6,7 @@ GITHUB_API_URL = "https://api.github.com"
 
 # Files and patterns to look for
 TARGET_EXTENSIONS = (".cmake", "CMakeLists.txt", ".bb")
-COMMENT_IDENTIFIER = "<!-- 48f61f98664448a973e3fb00b28723ce170dac87 -->\n⚠️ CMake or .bb changes detected"
+COMMENT_IDENTIFIER = "<!-- 48f61f98664448a973e3fb00b28723ce170dac87 -->"
 
 def get_pr_files(repo, pr_number, token):
     """
@@ -65,9 +65,16 @@ def check_and_comment(repo, pr_number, token):
 
         comment = (
             f"{COMMENT_IDENTIFIER}\n\n"
-            "Changes to CMake configuration files (.cmake, CMakeLists.txt) or .bb files detected. "
-            "Please ensure these changes are reviewed. This comment must be resolved."
+            "> [!CAUTION]\n"
+            "> ## Structural Changes Detected: Additional Verification Required\n"
+            "> This pull request includes structural changes (e.g., modifications to CMake or Bitbake files, or file relocations). Such changes may impact the Yocto build and require additional validation.\n"
+            ">\n"
+            "> **Request for Change:**\n"
+            "Please ensure that this PR is tested in the Yocto integration environment before merging. Compile gates in this repository do not cover Yocto builds, and changes might fail there. To prevent integration issues, create a draft PR in the dedicated Yocto repository and verify the build with the latest changes from this PR.\n"
+            ">\n"
+            "> Dismiss this comment to **confirm** that you **have acknowledged and addressed** this request."
         )
+
         post_pr_review_comment(repo, pr_number, token, comment)
         print("Comment successfully added.")
     else:
