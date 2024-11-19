@@ -70,7 +70,7 @@ def check_and_comment(repo, pr_number, token):
             "> This pull request includes structural changes (e.g., modifications to CMake or Bitbake files, or file relocations). Such changes may impact the Yocto build and require additional validation.\n"
             ">\n"
             "> **Request for Change:**\n"
-            "Please ensure that this PR is tested in the Yocto integration environment before merging. Compile gates in this repository do not cover Yocto builds, and changes might fail there. To prevent integration issues, create a draft PR in the dedicated Yocto repository and verify the build with the latest changes from this PR.\n"
+            "Please ensure that this PR is tested in the Yocto integration environment before merging. Compile gates in this repository do not cover Yocto builds, and changes might fail there. To prevent integration issues, create a draft PR in the dedicated Yocto repository and verify the build with the latest changes from this PR. More info [here](https://github.com/philips-internal/synergy-base/blob/main/docs/yocto-pr-workflow.md).\n"
             ">\n"
             "> Dismiss this comment to **confirm** that you **have acknowledged and addressed** this request."
         )
